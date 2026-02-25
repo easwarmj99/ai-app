@@ -33,7 +33,7 @@ resource "aws_security_group" "Jenkins-sg" {
 resource "aws_instance" "web" {
   ami                    = "ami-019715e0d74f695be"  #change your ami value according to your aws instance
   instance_type          = "m7i-flex.large"
-  key_name               = "chatgpt"
+  key_name               = "aiapp"
   vpc_security_group_ids = [aws_security_group.Jenkins-sg.id]
   user_data              = templatefile("./script.sh", {})
 
@@ -47,7 +47,7 @@ resource "aws_instance" "web" {
 resource "aws_instance" "web2" {
   ami                    = "ami-019715e0d74f695be" #change your ami value according to your aws instance 
   instance_type          = "c7i-flex.large"
-  key_name               = "chatgpt"
+  key_name               = "aiapp"
   vpc_security_group_ids = [aws_security_group.Jenkins-sg.id]
   tags = {
     Name = "Monitering via grafana"
