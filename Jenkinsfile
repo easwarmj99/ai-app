@@ -10,7 +10,7 @@ pipeline{
     stages {
         stage('Checkout from Git'){
             steps{
-                git branch: 'master', url: 'https://github.com/vijay3639/Chat-gpt.git'
+                git branch: 'master', url: 'https://github.com/easwarmj99/ai-app.git'
             }
         }
         stage('Install Dependencies') {
@@ -33,15 +33,6 @@ pipeline{
                 }
             }
         }
-        stage('OWASP FS SCAN') {
-            environment {
-                NVD_API_KEY = credentials('NVD_API_KEY')
-            }
-            steps {
-                dependencyCheck additionalArguments: "--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey=${NVD_API_KEY}", odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-            }
-        }
         stage('TRIVY FS SCAN') {
             steps {
                 sh "trivy fs . > trivyfs.json"
@@ -52,15 +43,15 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
                        sh "docker build -t chatbot ."
-                       sh "docker tag chatbot vijay3639/chatbot:latest "
-                       sh "docker push vijay3639/chatbot:latest "
+                       sh "docker tag chatbot easwarmj/chatbot:latest "
+                       sh "docker push easwarmj/chatbot:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image vijay3639/chatbot:latest > trivy.json"
+                sh "trivy image easwarmj/chatbot:latest > trivy.json"
             }
         }
         stage ("Remove container") {
@@ -71,7 +62,7 @@ pipeline{
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name chatbot -p 5555:3000 vijay3639/chatbot:latest'
+                sh 'docker run -d --name chatbot -p 5555:3000 easwarmj/chatbot:latest'
             }
         }
     }
